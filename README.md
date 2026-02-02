@@ -1,1 +1,928 @@
 # gaming-profile
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏文案作品集 - 辣椒</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #1d3557;
+            --accent-color: #457b9d;
+            --light-color: #f1faee;
+            --dark-color: #1a1a2e;
+            --gray-color: #8d99ae;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: 100px;
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--light-color);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #a8dadc;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tagline {
+            display: inline-block;
+            background-color: rgba(230, 57, 70, 0.2);
+            color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+        }
+        
+        /* 通用卡片样式 */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            margin: 3rem 0 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* 能力展示区域 */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .skill-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .skill-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .skill-card h3 {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* 文案作品展示 */
+        .work-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .work-nav button {
+            padding: 0.7rem 1.5rem;
+            background-color: white;
+            border: 2px solid var(--gray-color);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .work-nav button:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .work-nav button.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .work-content {
+            min-height: 500px;
+        }
+        
+        .work-item {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .work-item.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .work-excerpt {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-color);
+            font-style: italic;
+            color: #555;
+        }
+        
+        /* 小说展示 */
+        .novel-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .novel-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .novel-excerpt {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            line-height: 1.8;
+        }
+        
+        .novel-excerpt p {
+            margin-bottom: 1rem;
+            text-indent: 2em;
+        }
+        
+        /* 数据可视化 */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        /* 总结部分 */
+        .summary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
+            color: white;
+            padding: 3rem 0;
+            border-radius: 10px;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .summary h2 {
+            color: var(--light-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .summary p {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #a8dadc;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-item i {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>游戏文案作品集</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#skills">核心能力</a></li>
+                    <li><a href="#works">文案作品</a></li>
+                    <li><a href="#novel">原创小说</a></li>
+                    <li><a href="#data">数据洞察</a></li>
+                    <li><a href="#contact">联系我</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>辣椒 · 游戏文案作品集</h1>
+            <div class="tagline">从解构游戏故事，到构建游戏世界</div>
+            <p>网易游戏文案岗位候选人 | 游戏内容创作者 | 叙事设计师 | 数据分析师</p>
+            <p>擅长游戏产业分析、世界观构建、角色塑造与数据驱动的叙事优化</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- 核心能力 -->
+        <section id="skills">
+            <h2 class="section-title">核心能力</h2>
+            <div class="skills-container">
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>游戏行业洞察</h3>
+                    <p>深度分析游戏开发史、公司战略与行业事件，具备专业的游戏内容解构能力</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>叙事与文案创作</h3>
+                    <p>原创世界观构建、角色塑造、氛围渲染，擅长多线叙事与悬念铺设</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>数据驱动创作</h3>
+                    <p>基于用户反馈与数据分析优化内容策略，理解玩家心理与市场趋势</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文案作品展示 -->
+        <section id="works">
+            <h2 class="section-title">文案作品展示</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #666;">"消失游戏开发日志"系列精选 - B站累计播放量10万+</p>
+            
+            <div class="work-nav">
+                <button class="work-btn active" data-target="work1">寂静岭P.T.</button>
+                <button class="work-btn" data-target="work2">细胞分裂</button>
+                <button class="work-btn" data-target="work3">热血无赖2</button>
+                <button class="work-btn" data-target="work4">八日</button>
+            </div>
+            
+            <div class="work-content">
+                <!-- 寂静岭P.T. -->
+                <div class="work-item card active" id="work1">
+                    <h3 class="card-title"><i class="fas fa-ghost"></i> 最意难平的恐怖游戏，《寂静岭P.T.》的消失真相</h3>
+                    <p><strong>发布时间：</strong>2025年2月24日 | <strong>播放量：</strong>2.1万 | <strong>粉丝观看率：</strong>32.9%</p>
+                    
+                    <div class="work-excerpt">
+                        <p>如果让你选择一款最意难平的恐怖游戏，我想大多数人的脑中都会闪过一个选项——《寂静岭：PT》。</p>
+                        <p>本期我们将讲述一款取消过程最曲折，背后原因最复杂的恐怖游戏《寂静岭P.T.》，在这期间，小岛秀夫，科乐美与小岛工作室三者之间究竟牵扯了多少纠纷？</p>
+                    </div>
+                    
+                    <h4>内容亮点：</h4>
+                    <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                        <li>深入剖析小岛秀夫与科乐美的权力斗争与理念冲突</li>
+                        <li>揭示PT从惊艳亮相到突然取消的全过程</li>
+                        <li>分析日本游戏公司从主机转向移动端的战略转变</li>
+                        <li>探讨PT留下的宝贵遗产与行业影响</li>
+                    </ul>
+                    
+                    <h4>文案节选：</h4>
+                    <p>2015年4月24日，科乐美突然宣布PT在PlayStation上的"发行期"已经结束，4月29日他们将会把PT从PlayStation商店中移除，届时玩家将无法获取游戏...</p>
+                    <p>当PT从商店下架的消息传出后，eBay上预装有PT的PS4的售价竟被抬升至1000英镑。粉丝们开始发起一份请愿书，请求科乐美或者说小岛秀夫继续开发P.T.，这份请愿书一共获得了十九万五千名玩家的支持。</p>
+                </div>
+                
+                <!-- 细胞分裂 -->
+                <div class="work-item card" id="work2">
+                    <h3 class="card-title"><i class="fas fa-user-secret"></i> 从"合金装备杀手"到逐渐雪藏，《细胞分裂》的没落之路</h3>
+                    <p><strong>发布时间：</strong>2025年3月22日 | <strong>播放量：</strong>4.4万 | <strong>粉丝观看率：</strong>51.7%</p>
+                    
+                    <div class="work-excerpt">
+                        <p>说起潜行类动作游戏，还有这么一款游戏，他的主角如同Snake一样令人着迷；它的系列作品在欧美地区极富盛名，甚至一度被认为和合金装备系列旗鼓相当...</p>
+                    </div>
+                    
+                    <h4>内容亮点：</h4>
+                    <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                        <li>追溯细胞分裂系列的起源与发展历程</li>
+                        <li>分析育碧内部管理问题与IP战略调整</li>
+                        <li>探讨"汤姆·克兰西"系列IP的演化与现状</li>
+                        <li>预测细胞分裂系列的未来可能性</li>
+                    </ul>
+                    
+                    <h4>文案节选：</h4>
+                    <p>1999年某个时候，育碧纽约开始打造一款动作射击类游戏的原创IP，这部名称为《The Drift》的游戏，其设定是在一个70年代充满了未来复古主义的时代...</p>
+                    <p>时间一晃而过来到了2009年，育碧在加拿大的扩张还在继续，这一次，育碧让领导过刺客信条系列的执行制作人担任总经理，带领一部分蒙特利尔工作室的员工成立了育碧多伦多工作室...</p>
+                </div>
+                
+                <!-- 热血无赖2 -->
+                <div class="work-item card" id="work3">
+                    <h3 class="card-title"><i class="fas fa-city"></i> 港风版GTA！《热血无赖2》是如何胎死腹中的？</h3>
+                    <p><strong>发布时间：</strong>2025年1月30日 | <strong>播放量：</strong>1.8万 | <strong>粉丝观看率：</strong>89.1%</p>
+                    
+                    <div class="work-excerpt">
+                        <p>有这么一款游戏，它的主角是一个纯血中国人，他的故事发生在中国香港，他的内容充满了很多中国元素，甚至你走在大街上都能听见路人揣着端正的粤语口吐芬芳。</p>
+                    </div>
+                    
+                    <h4>内容亮点：</h4>
+                    <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                        <li>独家采访游戏主笔编剧蒂姆·卡特，获得一手资料</li>
+                        <li>揭露《热血无赖2》完整开发计划与创新设计</li>
+                        <li>分析Square Enix的商业决策对游戏开发的影响</li>
+                        <li>探讨中西文化融合在游戏叙事中的可能性</li>
+                    </ul>
+                    
+                    <h4>文案节选：</h4>
+                    <p>在联合战线工作室设想的热血无赖2中，游戏故事背景被放大到了珠江三角洲，玩家可以操作两名角色，一名是前作的主角沈威，而另一名则是新添加的主角方亨利...</p>
+                    <p>开发组还打算将热血无赖2变成一款"大型多人单机游戏"，也就是说，别的玩家在游戏中的举动也会影响你的游戏...</p>
+                </div>
+                
+                <!-- 八日 -->
+                <div class="work-item card" id="work4">
+                    <h3 class="card-title"><i class="fas fa-bomb"></i> 画面"最超前"的动作游戏《Eight Days》被索尼埋葬的真相</h3>
+                    <p><strong>发布时间：</strong>2025年4月11日 | <strong>播放量：</strong>2.4万 | <strong>粉丝观看率：</strong>42.1%</p>
+                    
+                    <div class="work-excerpt">
+                        <p>工作室游戏展画大饼点燃观众，放出炸裂演示真假难辨，新任总裁新官上任三把火砍掉游戏，多年后开发人员爆出真相众人泯然...</p>
+                    </div>
+                    
+                    <h4>内容亮点：</h4>
+                    <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                        <li>分析索尼PS3时代的技术路线与市场策略</li>
+                        <li>揭示游戏开发中技术冒进与商业现实的冲突</li>
+                        <li>探讨"技术演示"与"实际游戏"之间的差距</li>
+                        <li>讲述游戏开发者的理想与现实的碰撞</li>
+                    </ul>
+                    
+                    <h4>文案节选：</h4>
+                    <p>2001年，索尼开始开发下一世代游戏主机，为了增强次世代主机的性能，索尼宣布将会与东芝以及IBM合作研发一款CELL微处理器...</p>
+                    <p>如此炸裂的预告确实能够抓人眼球，但是这质量放在当时却是过于超前了，引发了不少人的质疑，就比如预告发布的当天，IGN就在文章中质疑过视频里多次出现"准星忽隐忽现"的情况...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 原创小说展示 -->
+        <section id="novel">
+            <h2 class="section-title">原创游戏世界观构建</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #666;">原创小说《渡鸦镇》 - 完整游戏世界观雏形展示</p>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-feather-alt"></i> 《渡鸦镇》 - 神秘学与集体压抑的哥特式世界</h3>
+                
+                <div class="novel-container">
+                    <div>
+                        <h4>世界观核心设定</h4>
+                        <ul style="margin-left: 2rem; margin-bottom: 1.5rem;">
+                            <li><strong>主题：</strong>秘术、集体记忆、牺牲与救赎</li>
+                            <li><strong>风格：</strong>哥特式、神秘学、社会寓言</li>
+                            <li><strong>核心冲突：</strong>个体自由 vs 集体和谐，真实记忆 vs 人造和平</li>
+                            <li><strong>关键设定：</strong>"三曲枝结"秘术、沉睡的小镇、记忆承载者</li>
+                        </ul>
+                        
+                        <h4>主要角色设定</h4>
+                        <ul style="margin-left: 2rem;">
+                            <li><strong>瑞雯：</strong>失忆的少女，能与秘术产生共鸣的"容器"</li>
+                            <li><strong>索菲娜(咿呀呀)：</strong>战争遗孤，带着神秘红宝石的"外来者"</li>
+                            <li><strong>彼得：</strong>科学理性主义者，小镇的"观察者"与"破解者"</li>
+                            <li><strong>安切斯特：</strong>神秘红袍秘术师，真相的"揭示者"</li>
+                            <li><strong>安德森夫人：</strong>前军医，小镇和谐的"铸造者"与"守护者"</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4>小说节选 - 第一章：盛大的葬礼与团结的断裂</h4>
+                        <div class="novel-excerpt">
+                            <p>渡鸦镇的确是个很安静的地方，安静到你能听见苍蝇撞在教堂窗户上的声音。当然，那块窗户早就裂了，希尔德神父每次看到都像被打击了的革命家一般，嘟囔着说那是"信仰出现了伤口"，可没人去修，毕竟信仰当不了饭吃。</p>
+                            <p>教堂前有一条河，不过没人敢去游泳，因为鱼早就翻了肚皮。有人说是因为水太脏，也有人说是因为鱼耐不住寂寞。</p>
+                            <p>瑞雯每天都坐在连接着小镇与教堂的桥上，看着河面的倒影发呆。她幻想着那下面可能藏着狼人，也可能是安切斯特在河底埋了宝藏。咿呀呀发出了嗤笑，说那是屁话，因为下面最多是老神父的酒瓶和呕吐物...</p>
+                            <p>今天是安德森夫人的葬礼。大自然似乎读懂了这一悲伤的场景，让风发出了"呜呜"般的声音，吹得墓地里的老树吱呀呀的响，像是哭丧，又像是伴奏。</p>
+                            <p>渡鸦镇的人从不争吵，他们只是大声地表达意见，然后谁也不听。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>游戏化改编潜力</h4>
+                    <p>《渡鸦镇》具备完整的游戏世界观基础，可改编为：</p>
+                    <ul style="margin-left: 2rem; columns: 2; column-gap: 2rem;">
+                        <li>叙事驱动冒险游戏（如《奇异人生》）</li>
+                        <li>哥特式RPG（如《血源诅咒》世界观）</li>
+                        <li>解谜探索游戏（如《锈湖》系列）</li>
+                        <li>视觉小说/互动电影</li>
+                        <li>多角色叙事游戏（如《十三机兵防卫圈》）</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据洞察 -->
+        <section id="data">
+            <h2 class="section-title">数据驱动的内容创作</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #666;">基于B站视频数据的分析与优化策略</p>
+            
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h4>视频播放量趋势</h4>
+                    <canvas id="playChart" height="250"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h4>视频互动率分析</h4>
+                    <canvas id="interactionChart" height="250"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <h4>内容类型表现</h4>
+                    <canvas id="categoryChart" height="250"></canvas>
+                </div>
+                
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3 class="card-title"><i class="fas fa-chart-bar"></i> 数据洞察与创作策略</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div>
+                            <h4>核心发现：</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li><strong>高质量深度内容</strong>（如《细胞分裂》）获得最高播放量(4.4万)</li>
+                                <li><strong>粉丝粘性极高</strong>，部分视频粉丝观看率达89.1%</li>
+                                <li><strong>行业分析类内容</strong>表现稳定，受众广泛</li>
+                                <li><strong>互动率与内容深度</strong>呈正相关关系</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4>优化策略：</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li>保持深度分析优势，强化独家信息获取</li>
+                                <li>增加世界观构建与叙事设计相关内容</li>
+                                <li>优化视频节奏，平衡信息密度与观看体验</li>
+                                <li>建立更系统的玩家心理与市场趋势分析框架</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; padding: 1rem; background-color: #f0f7ff; border-radius: 8px;">
+                        <h4>对游戏文案工作的启示：</h4>
+                        <p>数据分析能力让我能够理解不同玩家群体的兴趣点与情感需求，这将直接应用于游戏叙事设计中：</p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>通过数据识别叙事中的高光时刻与薄弱环节</li>
+                            <li>基于玩家反馈调整角色塑造与剧情节奏</li>
+                            <li>利用A/B测试等方法优化对话选项与分支叙事</li>
+                            <li>追踪玩家行为数据，优化世界观信息的呈现方式</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总结 -->
+        <section id="summary">
+            <div class="summary">
+                <h2>为什么我适合网易游戏文案岗位？</h2>
+                <p>我不仅是游戏的讲述者，更是游戏世界的构建者。通过"消失游戏开发日志"系列，我深入解构了游戏产业的运作逻辑；通过《渡鸦镇》的创作，我证明了从零构建完整游戏世界观的能力；通过数据分析，我掌握了将玩家反馈转化为叙事优化的方法论。</p>
+                <p>我渴望加入网易，将我的叙事才华、行业洞察与数据分析能力，投入到下一代游戏世界的创造中。</p>
+                <div style="margin-top: 2rem;">
+                    <div style="display: inline-block; padding: 0.8rem 2rem; background-color: var(--primary-color); color: white; border-radius: 30px; font-weight: bold; font-size: 1.1rem;">
+                        从解构游戏故事，到构建游戏世界
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚/联系信息 -->
+    <footer id="contact">
+        <div class="container">
+            <h2 style="color: white; text-align: center; margin-bottom: 2rem;">期待与您共创游戏叙事的新篇章</h2>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-user"></i>
+                    <span>辣椒 · 游戏文案候选人</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>B站UP主：BEST–辣椒</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>可通过B站私信联系</span>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>作品集制作时间：2026年2月1日 | 所有内容均为原创，转载请注明出处</p>
+                <p>本作品集专门为网易游戏文案岗位应聘制作</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 注册数据标签插件
+        Chart.register(ChartDataLabels);
+        
+        // 文案作品切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const workBtns = document.querySelectorAll('.work-btn');
+            const workItems = document.querySelectorAll('.work-item');
+            
+            workBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    workBtns.forEach(b => b.classList.remove('active'));
+                    // 给当前按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 隐藏所有作品项
+                    workItems.forEach(item => item.classList.remove('active'));
+                    
+                    // 显示对应的作品项
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+            
+            // 图表数据与配置
+            const videoData = {
+                titles: [
+                    '超越善恶2', '热血无赖2', '寂静岭P.T.', 
+                    '细胞分裂', '八日', '迈阿密热线(上)'
+                ],
+                playCounts: [6277, 18000, 21000, 44000, 24000, 22000],
+                dates: [
+                    '2024-12-30', '2025-01-30', '2025-02-24',
+                    '2025-03-22', '2025-04-11', '2025-06-10'
+                ],
+                interactions: [
+                    {likes: 95, comments: 8, coins: 38},
+                    {likes: 537, comments: 166, coins: 280},
+                    {likes: 480, comments: 98, coins: 163},
+                    {likes: 974, comments: 300, coins: 210},
+                    {likes: 487, comments: 65, coins: 103},
+                    {likes: 989, comments: 82, coins: 316}
+                ],
+                categories: ['行业分析', '叙事设计', '技术揭秘', '文化解读'],
+                categoryData: [40, 30, 20, 10]
+            };
+            
+            // 播放量趋势图
+            const playCtx = document.getElementById('playChart').getContext('2d');
+            const playChart = new Chart(playCtx, {
+                type: 'line',
+                data: {
+                    labels: videoData.titles,
+                    datasets: [{
+                        label: '播放量',
+                        data: videoData.playCounts,
+                        borderColor: '#e63946',
+                        backgroundColor: 'rgba(230, 57, 70, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '播放量'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 互动率分析图
+            const interactionCtx = document.getElementById('interactionChart').getContext('2d');
+            const interactionChart = new Chart(interactionCtx, {
+                type: 'bar',
+                data: {
+                    labels: videoData.titles,
+                    datasets: [
+                        {
+                            label: '点赞',
+                            data: videoData.interactions.map(i => i.likes),
+                            backgroundColor: '#457b9d'
+                        },
+                        {
+                            label: '评论',
+                            data: videoData.interactions.map(i => i.comments),
+                            backgroundColor: '#1d3557'
+                        },
+                        {
+                            label: '投币',
+                            data: videoData.interactions.map(i => i.coins),
+                            backgroundColor: '#e63946'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '互动数量'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 内容类型饼图 - 直接显示百分比
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: videoData.categories,
+                    datasets: [{
+                        data: videoData.categoryData,
+                        backgroundColor: [
+                            '#e63946',
+                            '#1d3557',
+                            '#457b9d',
+                            '#8d99ae'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            },
+                            formatter: function(value, context) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 平滑滚动到锚点
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
